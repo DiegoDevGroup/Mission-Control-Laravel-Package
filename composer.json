@@ -1,0 +1,40 @@
+{
+    "name": "diegodevgroup/mission-control-laravel",
+    "description": "The Laravel package for Mission Control (DiegoDev Group LLC)",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matt Lantz",
+            "email": "packages@diegodev.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "diegodevgroup/mission-control": "^1.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "^0.9.4",
+        "orchestra/testbench": "^3.3"
+    },
+    "bin": [
+        "bin/report"
+    ],
+    "autoload": {
+        "psr-4": {
+            "DiegoDevGroup\\MissionControlLaravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DiegoDevGroup\\MissionControlLaravel\\DiegoDevGroupMissionControlLaravelProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}

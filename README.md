@@ -1,0 +1,117 @@
+# Mission Control Laravel Package
+
+[![Build Status](https://travis-ci.org/DiegoDevGroupInc/Mission-Control-Laravel-Package.svg?branch=master)](https://travis-ci.org/DiegoDevGroupInc/Mission-Control-Laravel-Package)
+[![Packagist](https://img.shields.io/packagist/dt/diegodevgroup/mission-control-laravel.svg)](https://packagist.org/packages/diegodevgroup/mission-control-laravel)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://packagist.org/packages/diegodevgroup/mission-control-laravel)
+
+**Mission Control Laravel Package** - Send data to DiegoDevGroup's Mission Control system to stay in control of your applications.
+
+DiegoDev Group's Mission Control is an elegant Application Performance Management system. Forget being inundated with hundreds of charts and complex configurations for CMS websites, custom E-commerce platforms etc. Utilize the simple user interface, with specific data for high demand moments. Get notifications within minutes of your system being overloaded, or high levels of errors being triggered. Set it up in less than 5 minutes with your next deployment, and take back your weekends.
+
+## Requirements
+
+1. PHP 7.1+
+
+### Composer
+
+```php
+composer require diegodevgroup/mission-control-laravel
+```
+
+### Environment Variables
+
+You need to add these variables to your environment. These will be the format for apps deployed with Laravel FORGE.
+
+> Just remember you need to enable the logs on your server - see below for info
+
+```
+MISSION_CONTROL_TOKEN={project_token}
+MISSION_CONTROL_WEBHOOK={project_webhook}
+MISSION_CONTROL_LOG=/var/log/nginx/{project_domain}-access.log
+```
+
+### Publishing Configuration
+```php 
+php artisan vendor:publish --provider="DiegoDevGroup\MissionControlLaravel\DiegoDevGroupMissionControlLaravelProvider"
+```
+
+
+### Issues
+
+Issues lets you peak into your exceptions or any flagged messages you'd like to track. You can do so using the following methods:
+
+```
+use DiegoDevGroup\MissionControlLaravel\Issue;
+
+try {
+    // do some code
+} catch (Exception $e) {
+    app(Issue::class)->exception($e);
+}
+```
+
+Or if you just want to flag an potential issue or concern in your applicaiton:
+
+```
+use DiegoDevGroup\MissionControlLaravel\Issue;
+
+app(Issue::class)->log('Anything you want to say goes here', 'flag');
+```
+
+##### Flags
+
+Flags can be any terminology you want, to help sort through your issues.
+
+### Webhook
+
+You can easily tie the webhooks into your application with this package using class and method:
+
+```
+use DiegoDevGroup\MissionControlLaravel\Webhook;
+
+app(Webhook::class)->send('This is a title', 'This is a custom message', 'info');
+```
+
+### Mission Control Report
+
+The Report CRON job for Mission Control lets you send back to Mission Control data about traffic and performance of your application. To set this up, simply turn on `access.log` files in your server set up, for developers using FORGE you can do this by running these commands replacing {domain} with your app's domain.
+
+```
+sudo su
+sed -i -e 's/access_log off;/access_log \/var\/log\/nginx\/{domain}-access.log;/g' /etc/nginx/sites-available/{domain}
+```
+
+Then if you're using FORGE (default setup) you can add the following to the Scheduled Jobs:
+
+```
+COMMAND: php /home/forge/{domain}/artisan mission-control:report
+USER: forge
+FREQUENCY: Custom
+CUSTOM SCHEDULE: */5 * * * *
+```
+
+![Forge Screenshot](https://getmissioncontrol.io/img/forge_screenshot.png)
+
+If not simply add this to your `CRONTAB`:
+
+```
+*/5 * * * * php /{app-path}/artisan mission-control:report
+```
+
+### PHPUnit Settings
+
+Your tests may begin to fail, if this happens just add these environment variables to your `phpunit.xml` files. You can also add them directly to your CI tool of choice.
+
+```
+<env name="MISSION_CONTROL_TOKEN" value="testing"/>
+<env name="MISSION_CONTROL_WEBHOOK" value="testing"/>
+```
+
+## License
+Mission Control PHP Package is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+
+### Bug Reporting and Feature Requests
+Please add as many details as possible regarding submission of issues and feature requests
+
+### Disclaimer
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
